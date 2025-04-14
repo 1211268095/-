@@ -1,0 +1,52 @@
+ <!-- 新闻1 -->
+                <div class="news-item">
+                    <h4>今日最新消息，中美贸易战还在继续</h4>
+                    <div class="news-pic">
+                        <img src="222.jpg" alt="新闻图1">
+                        <img src="333.jpg" alt="新闻图2">
+                    </div>
+                    <p>作者：张三</p>
+                </div>
+                <!-- 新闻2 -->
+                <div class="news-item">
+                    <h4>AI兴起，对人们就业是利是弊</h4>
+                    <div class="news-pic">
+                        <img src="444.jpg" alt="新闻图4">
+                        <img src="555.jpg" alt="新闻图5">
+                    </div>
+                    <p>作者：李四</p>
+                </div>
+            </div>
+            <div class="news-right">
+                <!-- 热点新闻1 -->
+                <div class="news-item">
+                    <h4><a href="#">特朗普上台，谈及AI发展</a></h4>
+                    <div class="news-pic">
+                        <img src="666.jpg" alt="推荐图1">
+                        <img src="777.jpg" alt="推荐图2">
+                   </div>
+                </div>
+                <!-- 热点新闻2 -->
+                <div class="news-item">
+                    <h4><a href="#">苹果股票大跌</a></h4>
+                    <div class="news-pic">
+                        <img src="888.jpg" alt="推荐图3">
+                        <img src="999.jpg" alt="推荐图4">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showContent(type) {
+            document.querySelectorAll('.content').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.getElementById(type).classList.add('active');
+        }
+        showContent('position');
+    </script>
+</body>
+
+</html>
