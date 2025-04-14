@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>定位展示知识点视图</title>
+</head>
+<body>
+    <!-- 整体容器，用于包裹页面所有内容，采用相对定位作为定位基准 -->
+    <div class="container" style="position: relative; width: 800px; margin: 0 auto;">
+        <!-- 中央图片部分，相对定位 -->
+        <div class="center-img" style="position: relative; text-align: center;">
+            <img src="central_image.jpg" alt="HTML CSS JavaScript" style="width: 300px;">
+        </div>
+        <!-- 知识点部分，相对定位，用于承载三个知识点框 -->
+        <div class="knowledge-points" style="position: relative;">
+            <!-- 第一个知识点框，绝对定位 -->
+            <div class="point" id="point1" style="position: absolute; top: 50px; left: 100px; width: 200px; background-color: #f0f0f0; padding: 10px; box-sizing: border-box; z-index: 1;">
+                <h3>HTML基础和HTML5</h3>
+                <ul>
+                    <li>HTML概要与概述</li>
+                    <li>HTML编辑器（例如记事本）</li>
+                    <li>HTML元素（包括标签和属性）</li>
+                    <li>HTML5新增元素</li>
+                </ul>
+            </div>
+            <!-- 第二个知识点框，绝对定位 -->
+            <div class="point" id="point2" style="position: absolute; top: 180px; left: 100px; width: 200px; background-color: #f0f0f0; padding: 10px; box-sizing: border-box; z-index: 2;">
+                <h3>CSS基础和CSS3</h3>
+                <ul>
+                    <li>CSS介绍</li>
+                    <li>CSS语法</li>
+                    <li>CSS2D和3D转换</li>
+                    <li>CSS3新增选择器</li>
+                </ul>
+            </div>
+            <!-- 第三个知识点框，绝对定位 -->
+            <div class="point" id="point3" style="position: absolute; top: 50px; right: 100px; width: 200px; background-color: #f0f0f0; padding: 10px; box-sizing: border-box; z-index: 3;">
+                <h3>JavaScript</h3>
+                <ul>
+                    <li>数据类型</li>
+                    <li>基础语法</li>
+                    <li>DOM对象</li>
+                    <li>ES6语法</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
