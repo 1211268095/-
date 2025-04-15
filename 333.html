@@ -1,51 +1,191 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
-    <title>定位展示知识点视图</title>
+    <title>综合实验</title>
+    <style>
+        .switch-btn {
+            margin: 20px 0;
+            text-align: center; /* 让按钮居中 */
+        }
+
+        .switch-btn button {
+            padding: 10px 20px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .content {
+            display: none;
+        }
+
+        .content.active {
+            display: block;
+        }
+
+        /* 定位展示部分样式 */
+        .position-demo {
+            position: relative;
+            width: 600px;
+            height: 400px;
+            margin: 20px auto;
+            background: url('111.jpg') no-repeat center; /* 背景图片 */
+            background-size: cover; /* 让图片覆盖整个容器，可根据需要调整 */
+        }
+
+        .knowledge-box {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px; /* 添加圆角，使模块更美观 */
+        }
+
+        #box1 {
+            top: 50px;
+            left: 80px;
+            z-index: 2;
+        }
+
+        #box2 {
+            top: 50%; /* 让模块垂直居中 */
+            left: 50%; /* 让模块水平居中 */
+            transform: translate(-50%, -50%); /* 调整位置，使其在正中间 */
+            z-index: 1;
+        }
+
+        #box3 {
+            bottom: 60px;
+            right: 80px; /* 调整到右下角 */
+            z-index: 3;
+        }
+
+        /* 新闻资讯部分样式 */
+        .news-container {
+            display: flex;
+            padding: 20px;
+        }
+
+        .news-left {
+            flex: 3;
+            margin-right: 20px;
+        }
+
+        .news-right {
+            flex: 1;
+        }
+
+        .news-item {
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px; /* 添加圆角 */
+        }
+
+        .news-pic {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .news-pic img {
+            width: 120px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px; /* 图片也添加圆角 */
+        }
+    </style>
 </head>
+
 <body>
-    <!-- 整体容器，用于包裹页面所有内容，采用相对定位作为定位基准 -->
-    <div class="container" style="position: relative; width: 800px; margin: 0 auto;">
-        <!-- 中央图片部分，相对定位 -->
-        <div class="center-img" style="position: relative; text-align: center;">
-            <img src="central_image.jpg" alt="HTML CSS JavaScript" style="width: 300px;">
-        </div>
-        <!-- 知识点部分，相对定位，用于承载三个知识点框 -->
-        <div class="knowledge-points" style="position: relative;">
-            <!-- 第一个知识点框，绝对定位 -->
-            <div class="point" id="point1" style="position: absolute; top: 50px; left: 100px; width: 200px; background-color: #f0f0f0; padding: 10px; box-sizing: border-box; z-index: 1;">
-                <h3>HTML基础和HTML5</h3>
+    <div class="switch-btn">
+        <button onclick="showContent('position')">定位展示</button>
+        <button onclick="showContent('news')">新闻资讯</button>
+    </div>
+
+    <!-- 定位展示内容 -->
+    <div class="content" id="position">
+        <div class="position-demo">
+            <div class="knowledge-box" id="box1">
+                <h4>HTML基础</h4>
                 <ul>
-                    <li>HTML概要与概述</li>
-                    <li>HTML编辑器（例如记事本）</li>
-                    <li>HTML元素（包括标签和属性）</li>
-                    <li>HTML5新增元素</li>
+                    <li>HTML标签结构</li>
+                    <li>HTML5新特性</li>
                 </ul>
             </div>
-            <!-- 第二个知识点框，绝对定位 -->
-            <div class="point" id="point2" style="position: absolute; top: 180px; left: 100px; width: 200px; background-color: #f0f0f0; padding: 10px; box-sizing: border-box; z-index: 2;">
-                <h3>CSS基础和CSS3</h3>
+            <div class="knowledge-box" id="box2">
+                <h4>CSS基础</h4>
                 <ul>
-                    <li>CSS介绍</li>
-                    <li>CSS语法</li>
-                    <li>CSS2D和3D转换</li>
-                    <li>CSS3新增选择器</li>
+                    <li>CSS选择器</li>
+                    <li>盒模型应用</li>
                 </ul>
             </div>
-            <!-- 第三个知识点框，绝对定位 -->
-            <div class="point" id="point3" style="position: absolute; top: 50px; right: 100px; width: 200px; background-color: #f0f0f0; padding: 10px; box-sizing: border-box; z-index: 3;">
-                <h3>JavaScript</h3>
+            <div class="knowledge-box" id="box3">
+                <h4>JavaScript</h4>
                 <ul>
-                    <li>数据类型</li>
-                    <li>基础语法</li>
-                    <li>DOM对象</li>
-                    <li>ES6语法</li>
+                    <li>变量声明</li>
+                    <li>函数基础</li>
                 </ul>
             </div>
         </div>
     </div>
-</body>
-</html>
+
+    <!-- 新闻资讯内容 -->
+    <div class="content" id="news">
+        <h4>新闻资讯</h4>
+        <hr>
+        <div class="news-container">
+            <div class="news-left">
+	 <!-- 新闻1 -->
+	                <div class="news-item">
+	                    <h4>今日最新消息，中美贸易战还在继续</h4>
+	                    <div class="news-pic">
+	                        <img src="222.jpg" alt="新闻图1">
+	                        <img src="333.jpg" alt="新闻图2">
+	                    </div>
+	                </div>
+	                <!-- 新闻2 -->
+	                <div class="news-item">
+	                    <h4>AI兴起，对人们就业是利是弊</h4>
+	                    <div class="news-pic">
+	                        <img src="444.jpg" alt="新闻图4">
+	                        <img src="555.jpg" alt="新闻图5">
+	                    </div>
+	                </div>
+	            </div>
+	            <div class="news-right">
+	                <!-- 热点新闻1 -->
+	                <div class="news-item">
+	                    <h4><a href="#">特朗普上台，谈及AI发展</a></h4>
+	                    <div class="news-pic">
+	                        <img src="666.jpg" alt="推荐图1">
+	                        <img src="777.jpg" alt="推荐图2">
+	                   </div>
+	                </div>
+	                <!-- 热点新闻2 -->
+	                <div class="news-item">
+	                    <h4><a href="#">苹果股票大跌</a></h4>
+	                    <div class="news-pic">
+	                        <img src="888.jpg" alt="推荐图3">
+	                        <img src="999.jpg" alt="推荐图4">
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	
+	    <script>
+	        function showContent(type) {
+	            document.querySelectorAll('.content').forEach(el => {
+	                el.classList.remove('active');
+	            });
+	            document.getElementById(type).classList.add('active');
+	        }
+	        showContent('position');
+	    </script>
+	</body>
+	
+	</html>
