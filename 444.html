@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人信息采集表</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ccc;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="tel"],
+        input[type="email"],
+        select,
+        textarea {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input[type="file"] {
+            margin-top: 5px;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+       .fieldset-style {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <form>
+        <fieldset class="fieldset-style">
+            <legend>个人简历</legend>
+            <table>
+                <tr>
+                    <td class="left"><i class="fa-solid fa-user"></i> 姓名</td>
+                    <td>王祉盛</td>
+                    <th>性别</th>
+                    <td>
+                        <select>
+                            <option value="男">男</option>
+                            <option value="女">女</option>
+                        </select>
+                    </td>
+                    <th>年龄</th>
+                    <td><input type="number" placeholder="" min="1" max="150"></td>
+                </tr>
+                <tr>
+                    <td class="left"><i class="fa-solid fa-location-dot"></i> 籍贯</td>
+                    <td>山东省菏泽市</td>
+                    <td><i class="fa-solid fa-phone"></i> 联系电话</td>
+                    <td>15865175471</td>
+                    <td><i class="fa-solid fa-envelope"></i> 电子邮箱</td>
+                    <td>1211268095@qq.com</td>
+                    <th>照片</th>
+                    <td rowspan="3">
+                        <img src="111.jpg" alt="个人照片" width="180" height="200">
+                    </td>
+                </tr>
+                <tr>
+                    <th>学历</th>
+                    <td>
+                        <select>
+                            <option value="小学">小学</option>
+                            <option value="初中">初中</option>
+                            <option value="高中">高中</option>
+                            <option value="大专">大专</option>
+                            <option value="本科">本科</option>
+                            <option value="硕士">硕士</option>
+                            <option value="博士">博士</option>
+                        </select>
+                    </td>
+                    <th>健康状况</th>
+                    <td>
+                        <select>
+                            <option value="健康">健康</option>
+                            <option value="一般">一般</option>
+                            <option value="较差">较差</option>
+                        </select>
+                    </td>
+                    <th>婚姻状况</th>
+                    <td>
+                        <select>
+                            <option value="未婚">未婚</option>
+                            <option value="已婚">已婚</option>
+                            <option value="离异">离异</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>求职意向</th>
+                    <td>
+                        <select multiple>
+                            <option value="前端开发">前端开发</option>
+                            <option value="后端开发">后端开发</option>
+                            <option value="测试">测试</option>
+                            <option value="设计">设计</option>
+                            <option value="数据分析">数据分析</option>
+                            <option value="产品经理">产品经理</option>
+                        </select>
+                    </td>
+                    <th>专业</th>
+                    <td>
+                        <select>
+                            <option value="计算机科学与技术">计算机科学与技术</option>
+                            <option value="软件工程">软件工程</option>
+                            <option value="电子信息工程">电子信息工程</option>
+                        </select>
+                    </td>
+                    <th>毕业院校</th>
+                    <td>
+                        <select>
+                            <option value="鲁东大学">鲁东大学</option>
+                            <option value="烟台大学">烟台大学</option>
+                            <option value="山东工商学院">山东工商学院</option>
+                            <option value="滨州医学院烟台校区">滨州医学院烟台校区</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset class="fieldset-style">
+            <legend>其他信息</legend>
+            <table>
+                <tr>
+                    <th>技能证书</th>
+                    <td>
+                        <input type="checkbox" name="skill" value="英语四六级">英语四六级
+                        <input type="checkbox" name="skill" value="计算机二级">计算机二级
+                        <input type="checkbox" name="skill" value="软件设计师">软件设计师
+                        <input type="checkbox" name="skill" value="系统分析师">系统分析师
+                        <input type="checkbox" name="skill" value="数据库系统工程师">数据库系统工程师
+                    </td>
+                </tr>
+                <tr>
+                    <th>个人特长与爱好</th>
+                    <td>
+                        <input type="checkbox" name="hobby" value="篮球">篮球
+                        <input type="checkbox" name="hobby" value="阅读">阅读
+                        <input type="checkbox" name="hobby" value="绘画">绘画
+                        <input type="checkbox" name="hobby" value="游泳">游泳
+                        <input type="checkbox" name="hobby" value="唱歌">唱歌
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left"> 项目经历</td>
+                    <td colspan="6">承担后端主要开发工作，基于Python语言和Django框架，开发员工信息管理、考勤记录录入、统计分析等功能模块，实现考勤规则配置、异常考勤提醒等业务逻辑。
+					对接考勤硬件设备（如指纹打卡机、人脸识别设备），解析设备上传的数据，将考勤数据准确存储到数据库中，并进行数据校验和清洗。</td>
+                </tr>
+                <tr>
+                    <td class="left"> 自我评价</td>
+                    <td colspan="6">
+                    	本人具备强烈的责任心与敬业精神，对待工作一丝不苟。在过往的学习和实践中，积累了丰富的专业知识与实践经验。熟练掌握 [列举相关专业技能] ，能够高效运用这些技能解决实际问题。性格开朗乐观，善于与人沟通协作，具备良好的团队合作精神，能快速融入新团队。同时，具备较强的学习能力和适应能力，面对新的知识和挑战，能够迅速掌握并加以运用。在生活中，坚持自律，注重自我提升，不断拓展自己的知识面和技能边界，始终以积极向上的态度迎接生活和工作中的各种挑战。
+                    </td>
+            </table>
+        </fieldset>
+        <input type="submit" value="提交">
+        <input type="reset" value="重置">
+    </form>
+</body>
+
+</html>
