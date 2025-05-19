@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能点名系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        secondary: '#f97316',
+                        neutral: '#f3f4f6',
+                        dark: '#1e293b'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .name-highlight {
+                animation: pulse 1.5s infinite;
+            }
+            .result-appear {
+                animation: fadeIn 0.5s ease-out;
+            }
+            .btn-press {
+                transform: translateY(2px);
+            }
+        }
+
+        @keyframes pulse {
+            0% { background-color: rgba(59, 130, 246, 0.2); }
+            50% { background-color: rgba(59, 130, 246, 0.6); }
+            100% { background-color: rgba(59, 130, 246, 0.2); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="font-inter bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- 头部标题 -->
+        <header class="text-center mb-10">
+            <h1 class="text-[clamp(2rem,5vw,3rem)] font-bold text-dark mb-3 tracking-tight">
+                <i class="fa-solid fa-graduation-cap text-primary mr-2"></i>智能点名系统
+            </h1>
+            <p class="text-gray-600 text-lg max-w-2xl mx-auto">
+                高效、公平、随机的课堂点名解决方案，支持44名学生的快速抽取
+            </p>
+        </header>
+
+        <!-- 点名控制区 -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8 transform transition-all hover:shadow-xl">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="w-full md:w-1/3">
+                    <h2 class="text-xl font-semibold text-dark mb-2 flex items-center">
+                        <i class="fa-solid fa-controls text-primary mr-2"></i>点名控制
+                    </h2>
+                    <p class="text-gray-600 mb-4">点击开始按钮随机抽取学生，点击停止结束点名</p>
+                    <div class="flex gap-3">
+                        <button id="startBtn" class="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-lg shadow-md transition-all duration-300 flex items-center font-medium">
+                            <i class="fa-solid fa-play mr-2"></i>开始点名
+                        </button>
+                        <button id="stopBtn" class="bg-secondary hover:bg-secondary/90 text-white px-6 py-3 rounded-lg shadow-md transition-all duration-300 flex items-center font-medium" disabled>
+                            <i class="fa-solid fa-stop mr-2"></i>停止点名
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="w-full md:w-2/3 bg-neutral rounded-lg p-4 border border-gray-200">
+                    <h3 class="text-lg font-medium text-dark mb-2 flex items-center">
+                        <i class="fa-solid fa-user-check text-secondary mr-2"></i>已点名学生
+                    </h3>
+                    <div id="resultArea" class="min-h-[60px] bg-white rounded p-3 border border-gray-200 flex flex-wrap gap-2 items-center">
+                        <span class="text-gray-400 italic">点名结束后显示结果...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 学生名单表格 -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+            <div class="p-6 border-b border-gray-100">
+                <h2 class="text-xl font-semibold text-dark flex items-center">
+                    <i class="fa-solid fa-users text-primary mr-2"></i>学生名单
+                </h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">序号</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">序号</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">序号</th>
+                            <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">序号</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentTable" class="bg-white divide-y divide-gray-200">
+                        <!-- 学生数据将通过JavaScript动态生成 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 底部统计信息 -->
+        <footer class="bg-white rounded-xl shadow-md p-4 text-center text-gray-600 text-sm">
+            <p>© 2025 智能点名系统 | 共 <span id="totalStudents">44</span> 名学生</p>
+        </footer>
+    </div>
+
+    <script>
+        // 学生数量
+        const totalStudents = 44;
+
+        // DOM元素
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const resultArea = document.getElementById('resultArea');
+        const studentTable = document.getElementById('studentTable');
+        
+        // 状态变量
+        let isRolling = false;
+        let rollInterval;
+        let selectedStudents = [];
+        let currentHighlightIndex = -1;
+        let lastSelectedIndex = -1; // 新增：记录上一次选中的学生
+
+        // 初始化学生表格
+        function initStudentTable() {
+            let tableHTML = '';
+            const colsPerRow = 4;
+            const rows = Math.ceil(totalStudents / colsPerRow);
+            
+            for (let i = 0; i < rows; i++) {
+                tableHTML += '<tr>';
+                for (let j = 0; j < colsPerRow; j++) {
+                    const index = i * colsPerRow + j;
+                    if (index < totalStudents) {
+                        tableHTML += `
+                            <td class="px-4 py-3 whitespace-nowrap">
+                                <div id="student-${index}" class="text-sm text-gray-900 name-cell mx-auto w-10 h-10 flex items-center justify-center rounded-full transition-all duration-300 hover:bg-gray-100 cursor-pointer">
+                                    ${index + 1}
+                                </div>
+                            </td>
+                        `;
+                    } else {
+                        tableHTML += '<td></td>';
+                    }
+                }
+                tableHTML += '</tr>';
+            }
+            
+            studentTable.innerHTML = tableHTML;
+        }
+
+        // 随机选择学生
+        function selectRandomStudent() {
+            // 移除之前的高亮
+            if (currentHighlightIndex !== -1) {
+                document.getElementById(`student-${currentHighlightIndex}`).classList.remove('name-highlight', 'bg-primary/30', 'text-white', 'font-bold');
+            }
+            
+            // 随机选择新的学生
+            const randomIndex = Math.floor(Math.random() * totalStudents);
+            currentHighlightIndex = randomIndex;
+            
+            // 添加新的高亮
+            const currentStudent = document.getElementById(`student-${currentHighlightIndex}`);
+            currentStudent.classList.add('name-highlight', 'bg-primary/30', 'text-white', 'font-bold');
+            
+            // 添加动画效果
+            currentStudent.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                currentStudent.style.transform = 'scale(1)';
+            }, 150);
+        }
+
+        // 重置所有被选中的学生样式
+        function resetSelectedStudents() {
+            // 移除之前选中学生的高亮
+            if (lastSelectedIndex !== -1) {
+                document.getElementById(`student-${lastSelectedIndex}`).classList.remove('bg-secondary/60', 'text-white', 'font-bold');
+            }
+        }
+
+        // 开始点名
+        function startRolling() {
+            if (isRolling) return;
+            
+            isRolling = true;
+            startBtn.disabled = true;
+            stopBtn.disabled = false;
+            resultArea.innerHTML = '<span class="text-gray-400 italic">正在点名中...</span>';
+            
+            // 添加按钮按下效果
+            startBtn.classList.add('btn-press');
+            setTimeout(() => {
+                startBtn.classList.remove('btn-press');
+            }, 150);
+            
+            // 清空已选学生
+            selectedStudents = [];
+            
+            // 设置定时器
+            rollInterval = setInterval(selectRandomStudent, 100);
+        }
+
+        // 停止点名
+        function stopRolling() {
+            if (!isRolling) return;
+            
+            isRolling = false;
+            clearInterval(rollInterval);
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+            
+            // 添加按钮按下效果
+            stopBtn.classList.add('btn-press');
+            setTimeout(() => {
+                stopBtn.classList.remove('btn-press');
+            }, 150);
+            
+            // 记录最终选中的学生
+            if (currentHighlightIndex !== -1) {
+                resetSelectedStudents(); // 新增：重置之前选中的学生
+                
+                selectedStudents = [currentHighlightIndex + 1]; // 只保留当前选中的学生
+                lastSelectedIndex = currentHighlightIndex; // 更新上一次选中的学生
+                
+                // 更新结果区域
+                updateResultArea();
+                
+                // 添加最终选中效果
+                const finalStudent = document.getElementById(`student-${currentHighlightIndex}`);
+                finalStudent.classList.remove('name-highlight');
+                finalStudent.classList.add('bg-secondary/60', 'text-white', 'font-bold');
+                
+                // 添加动画效果
+                finalStudent.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    finalStudent.style.transform = 'scale(1)';
+                }, 300);
+            }
+        }
+
+        // 更新结果区域
+        function updateResultArea() {
+            if (selectedStudents.length === 0) {
+                resultArea.innerHTML = '<span class="text-gray-400 italic">点名结束后显示结果...</span>';
+                return;
+            }
+            
+            resultArea.innerHTML = '';
+            selectedStudents.forEach((student, index) => {
+                const badge = document.createElement('span');
+                badge.className = 'bg-secondary/10 text-secondary px-3 py-1 rounded-full text-sm font-medium result-appear';
+                badge.style.animationDelay = `${index * 0.1}s`;
+                badge.textContent = `学生 ${student}`;
+                resultArea.appendChild(badge);
+            });
+        }
+
+        // 添加事件监听器
+        function setupEventListeners() {
+            startBtn.addEventListener('click', startRolling);
+            stopBtn.addEventListener('click', stopRolling);
+            
+            // 为每个学生单元格添加点击事件
+            studentTable.addEventListener('click', (e) => {
+                if (e.target.classList.contains('name-cell') && !isRolling) {
+                    const index = parseInt(e.target.id.split('-')[1]);
+                    
+                    // 切换选中状态
+                    if (selectedStudents.includes(index + 1)) {
+                        selectedStudents = selectedStudents.filter(s => s !== index + 1);
+                        e.target.classList.remove('bg-secondary/60', 'text-white', 'font-bold');
+                        lastSelectedIndex = -1; // 如果手动取消选中，重置上一次选中的学生
+                    } else {
+                        resetSelectedStudents(); // 重置其他选中的学生
+                        selectedStudents = [index + 1]; // 只选中当前学生
+                        lastSelectedIndex = index;
+                        e.target.classList.add('bg-secondary/60', 'text-white', 'font-bold');
+                    }
+                    
+                    updateResultArea();
+                }
+            });
+        }
+
+        // 初始化应用
+        function initApp() {
+            initStudentTable();
+            setupEventListeners();
+        }
+
+        // 页面加载完成后初始化应用
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>    
