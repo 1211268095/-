@@ -1,0 +1,2314 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>塔斯汀示例页面</title>
+  <style>
+    /* 通用样式重置 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Microsoft YaHei', sans-serif;
+      color: #333;
+    }
+
+    /* 颜色变量 */
+    :root {
+      --primary-color: #f82828; /* 塔斯汀主色调 */
+      --secondary-color: #333;
+      --light-color: #fff;
+      --gray-color: #f5f5f5;
+      --text-color: #666;
+    }
+
+    /* 基础样式 */
+    a {
+      text-decoration: none;
+      color: inherit;
+      transition: color 0.3s;
+    }
+
+    a:hover {
+      color: var(--primary-color);
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      border-radius: 4px;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: var(--light-color);
+      border: 1px solid var(--primary-color);
+    }
+
+    .btn-primary:hover {
+      background-color: #e01f1f;
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      color: var(--primary-color);
+      border: 1px solid var(--primary-color);
+    }
+
+    .btn-outline:hover {
+      background-color: var(--primary-color);
+      color: var(--light-color);
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 0;
+    }
+
+    .section-title {
+      font-size: 32px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 40px;
+      color: var(--secondary-color);
+    }
+
+    .section-title span {
+      color: var(--primary-color);
+    }
+
+    /* 弹出层样式 */
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    .popup {
+      width: 500px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    .popup-header {
+      background-color: var(--primary-color);
+      color: #fff;
+      padding: 10px;
+      text-align: center;
+      font-size: 18px;
+    }
+
+    .popup-content {
+      padding: 20px;
+      line-height: 1.6;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+
+    .popup-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+      font-size: 24px;
+      color: #fff;
+      background: none;
+      border: none;
+      transition: transform 0.3s;
+    }
+
+    .popup-close:hover {
+      transform: rotate(90deg);
+    }
+
+    /* 头部导航样式 */
+    header {
+      width: 100%;
+      background-color: #fff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 99;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+    }
+
+    .logo {
+      width: 80px;
+      height: auto;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+    }
+
+    nav ul li {
+      margin-right: 25px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: var(--secondary-color);
+      font-weight: 500;
+      padding: 5px 0;
+      position: relative;
+    }
+
+    nav ul li a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: var(--primary-color);
+      transition: width 0.3s;
+    }
+
+    nav ul li a:hover::after,
+    nav ul li a.active::after {
+      width: 100%;
+    }
+
+    .hotline {
+      color: var(--primary-color);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+    }
+
+    .hotline i {
+      margin-right: 5px;
+    }
+
+    /* 移动端菜单 */
+    .mobile-menu-btn {
+      display: none;
+      font-size: 24px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      nav ul {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: #fff;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 10px 0;
+      }
+
+      nav ul.active {
+        display: flex;
+      }
+
+      nav ul li {
+        margin-right: 0;
+        padding: 10px 20px;
+      }
+
+      .mobile-menu-btn {
+        display: block;
+      }
+
+      .hotline {
+        display: none;
+      }
+    }
+
+    /* 轮播图样式 */
+    .banner {
+      width: 100%;
+      height: 500px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .banner .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 0.8s ease-in-out;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .banner .slide.active {
+      opacity: 1;
+    }
+
+    .banner .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .banner .text {
+      position: absolute;
+      left: 10%;
+      top: 30%;
+      color: #fff;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+      max-width: 600px;
+    }
+
+    .banner .text h2 {
+      font-size: 48px;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    .banner .text p {
+      font-size: 20px;
+      margin-bottom: 25px;
+      max-width: 500px;
+    }
+
+    .banner .qrcode {
+      display: flex;
+      align-items: center;
+    }
+
+    .banner .qrcode img {
+      width: 80px;
+      height: 80px;
+      margin-right: 12px;
+      border-radius: 8px;
+      object-fit: contain;
+      background-color: #fff;
+    }
+
+    .banner .qrcode span {
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    /* 轮播控制按钮 */
+    .banner-control {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      background-color: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      transition: background-color 0.3s;
+    }
+
+    .banner-control:hover {
+      background-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .banner-control.prev {
+      left: 20px;
+    }
+
+    .banner-control.next {
+      right: 20px;
+    }
+
+    .banner-control i {
+      color: #fff;
+      font-size: 20px;
+    }
+
+    /* 指示器样式 */
+    .banner-indicator {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+    }
+
+    .banner-indicator span {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .banner-indicator span.active {
+      background-color: var(--primary-color);
+    }
+
+    /* 关于我们部分 */
+    .about {
+      background-color: var(--gray-color);
+    }
+
+    .about-content {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+    }
+
+    .about-img {
+      width: 50%;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .about-img img {
+      width: 100%;
+      height: auto;
+      transition: transform 0.5s;
+    }
+
+    .about-img img:hover {
+      transform: scale(1.05);
+    }
+
+    .about-text {
+      width: 50%;
+    }
+
+    .about-text h3 {
+      font-size: 24px;
+      margin-bottom: 15px;
+      color: var(--secondary-color);
+    }
+
+    .about-text p {
+      line-height: 1.8;
+      margin-bottom: 20px;
+      color: var(--text-color);
+    }
+
+    @media (max-width: 768px) {
+      .about-content {
+        flex-direction: column;
+      }
+
+      .about-img,
+      .about-text {
+        width: 100%;
+      }
+    }
+
+    /* 特色美食部分 */
+    .foods {
+      background-color: #fff;
+    }
+
+    .food-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+    }
+
+    .food-item {
+      background-color: var(--gray-color);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .food-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .food-img {
+      height: 220px;
+      overflow: hidden;
+    }
+
+    .food-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s;
+    }
+
+    .food-item:hover .food-img img {
+      transform: scale(1.1);
+    }
+
+    .food-info {
+      padding: 20px;
+    }
+
+    .food-info h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: var(--secondary-color);
+    }
+
+    .food-info p {
+      font-size: 14px;
+      color: var(--text-color);
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+
+    .food-price {
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    @media (max-width: 992px) {
+      .food-list {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .food-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* 热销产品统计部分 */
+    .hot-sales {
+      background-color: var(--gray-color);
+    }
+
+    .hot-sales-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+    }
+
+    .hot-sales-left {
+      width: 30%;
+    }
+
+    .hot-sales-right {
+      width: calc(70% - 30px);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+    }
+
+    .hot-product {
+      background-color: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s;
+    }
+
+    .hot-product:hover {
+      transform: translateY(-5px);
+    }
+
+    .hot-product h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: var(--secondary-color);
+    }
+
+    .hot-product p {
+      font-size: 14px;
+      color: var(--text-color);
+      margin-bottom: 5px;
+    }
+
+    .hot-product p span {
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    .hot-chart {
+      width: 100%;
+      background-color: #fff;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .hot-chart h3 {
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: var(--secondary-color);
+    }
+
+    .chart-container {
+      height: 300px;
+      width: 100%;
+    }
+
+    @media (max-width: 992px) {
+      .hot-sales-left,
+      .hot-sales-right {
+        width: 100%;
+      }
+    }
+
+    /* 加盟优势部分 */
+    .advantages {
+      background-color: var(--gray-color);
+    }
+
+    .advantage-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+    }
+
+    .advantage-item {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s;
+    }
+
+    .advantage-item:hover {
+      transform: translateY(-5px);
+    }
+
+    .advantage-icon {
+      width: 60px;
+      height: 60px;
+      background-color: var(--primary-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+
+    .advantage-icon i {
+      color: #fff;
+      font-size: 24px;
+    }
+
+    .advantage-item h3 {
+      font-size: 18px;
+      margin-bottom: 15px;
+      color: var(--secondary-color);
+    }
+
+    .advantage-item p {
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      .advantage-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* 加盟流程部分 */
+    .join-process {
+      background-color: #fff;
+    }
+
+    .process-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .process-item {
+      width: calc(50% - 15px);
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+    }
+
+    .process-number {
+      width: 40px;
+      height: 40px;
+      background-color: var(--primary-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 600;
+      margin-right: 15px;
+      flex-shrink: 0;
+    }
+
+    .process-content h3 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: var(--secondary-color);
+    }
+
+    .process-content p {
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      .process-item {
+        width: 100%;
+      }
+    }
+
+    /* 联系我们部分 */
+    .contact {
+      background-color: var(--gray-color);
+    }
+
+    .contact-content {
+      display: flex;
+      gap: 40px;
+    }
+
+    .contact-info {
+      width: 40%;
+    }
+
+    .contact-item {
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    .contact-icon {
+      width: 40px;
+      height: 40px;
+      background-color: var(--primary-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      flex-shrink: 0;
+    }
+
+    .contact-icon i {
+      color: #fff;
+    }
+
+    .contact-text h3 {
+      font-size: 18px;
+      margin-bottom: 5px;
+      color: var(--secondary-color);
+    }
+
+    .contact-text p {
+      color: var(--text-color);
+    }
+
+    .contact-form {
+      width: 60%;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--secondary-color);
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      transition: border-color 0.3s;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+
+    @media (max-width: 768px) {
+      .contact-content {
+        flex-direction: column;
+      }
+
+      .contact-info,
+      .contact-form {
+        width: 100%;
+      }
+    }
+
+    /* 页脚部分 */
+    footer {
+      background-color: var(--secondary-color);
+      color: #fff;
+      padding: 60px 0;
+    }
+
+    .footer-content {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .footer-item {
+      width: calc(25% - 20px);
+      margin-bottom: 30px;
+    }
+
+    .footer-item h3 {
+      font-size: 18px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .footer-item h3::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 0;
+      width: 40px;
+      height: 2px;
+      background-color: var(--primary-color);
+    }
+
+    .footer-item p {
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+
+    .footer-item ul {
+      list-style: none;
+    }
+
+    .footer-item ul li {
+      margin-bottom: 10px;
+    }
+
+    .footer-item ul li a {
+      color: #ccc;
+      transition: color 0.3s;
+    }
+
+    .footer-item ul li a:hover {
+      color: var(--primary-color);
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 15px;
+    }
+
+    .footer-social a {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s;
+    }
+
+    .footer-social a:hover {
+      background-color: var(--primary-color);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 20px;
+      margin-top: 40px;
+      text-align: center;
+      color: #ccc;
+    }
+
+    @media (max-width: 992px) {
+      .footer-item {
+        width: calc(50% - 20px);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .footer-item {
+        width: 100%;
+      }
+    }
+
+    /* 热点新闻轮播样式 */
+    .news-banner {
+      width: 100%;
+      height: 400px;
+      position: relative;
+      overflow: hidden;
+      background-color: var(--gray-color);
+      border-radius: 8px;
+    }
+
+    .news-banner .news-slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 0.8s ease-in-out;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .news-banner .news-slide.active {
+      opacity: 1;
+    }
+
+    .news-banner .news-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .news-banner .news-text {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 20px;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0));
+      color: #fff;
+    }
+
+    .news-banner .news-text h3 {
+      font-size: 24px;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .news-banner .news-text p {
+      font-size: 16px;
+      line-height: 1.6;
+      opacity: 0.9;
+    }
+
+    /* 热点新闻轮播控制按钮 */
+    .news-banner-control {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      background-color: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      transition: background-color 0.3s;
+    }
+
+    .news-banner-control:hover {
+      background-color: rgba(255, 255, 255, 0.5);
+    }
+
+    .news-banner-control.prev {
+      left: 20px;
+    }
+
+    .news-banner-control.next {
+      right: 20px;
+    }
+
+    .news-banner-control i {
+      color: #fff;
+      font-size: 20px;
+    }
+
+    /* 热点新闻指示器样式 */
+    .news-banner-indicator {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+    }
+
+    .news-banner-indicator span {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .news-banner-indicator span.active {
+      background-color: var(--primary-color);
+    }
+
+    /* 热点新闻详情弹出层 */
+    .news-detail-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .news-detail-overlay.active {
+      display: flex;
+    }
+
+    .news-detail-content {
+      width: 100%;
+      max-width: 800px;
+      max-height: 90vh;
+      background-color: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .news-detail-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: 30px;
+      height: 30px;
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 10;
+      transition: background-color 0.3s;
+    }
+
+    .news-detail-close:hover {
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    .news-detail-close i {
+      color: #fff;
+      font-size: 16px;
+    }
+
+    .news-detail-image {
+      width: 100%;
+      height: 300px;
+      overflow: hidden;
+    }
+
+    .news-detail-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .news-detail-body {
+      padding: 20px;
+      overflow-y: auto;
+      max-height: calc(90vh - 300px);
+    }
+
+    .news-detail-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 15px;
+      color: var(--secondary-color);
+    }
+
+    .news-detail-date {
+      color: var(--text-color);
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .news-detail-text {
+      line-height: 1.8;
+      margin-bottom: 20px;
+      color: var(--secondary-color);
+    }
+
+    @media (max-width: 768px) {
+      .news-banner {
+        height: 300px;
+      }
+
+      .news-banner .news-text h3 {
+        font-size: 20px;
+      }
+
+      .news-banner .news-text p {
+        font-size: 14px;
+      }
+
+      .news-detail-image {
+        height: 200px;
+      }
+
+      .news-detail-body {
+        max-height: calc(90vh - 200px);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- 弹出层 -->
+  <div class="overlay" id="overlay">
+    <div class="popup">
+      <button class="popup-close" id="closePopup">&times;</button>
+      <div class="popup-header">
+        <h2>品牌声明</h2>
+      </div>
+      <div class="popup-content">
+        <p>“塔斯汀”系福州塔斯汀餐饮管理有限公司旗下主营的、唯一的 "中国汉堡"品类商品品牌。</p>
+        <p>近日，市场上有部分餐饮品牌从商标、门店装潢、产品包装、产品命名和宣传标语等维度，高度摹仿"塔斯汀"品牌，对外销售"中国汉堡"品类商品，导致大量消费者产生混淆和误认。此类行为不仅严重侵害了消费者的合法权益，也损害了"塔斯汀"品牌的声誉和市场形象。鉴于此，我司特此声明：</p>
+        <p>一、截至目前，"塔斯汀"系我司唯一的 "中国汉堡"品类商品品牌。任何在文字字形、发音或整体视觉效果上与 "塔斯汀"相似的品牌，均与我司无关。请广大消费者提高警惕，仔细辨别，以免权益受损。</p>
+        <p>二、我司绝不容忍任何侵犯我司知识产权和不正当竞争的商业行为。我司将对此类侵权行为采取法律行动，守护公平竞争的市场环境。</p>
+        <p>福州塔斯汀餐饮管理有限公司<br>2024年11月25日</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 热点新闻详情弹出层 -->
+  <div class="news-detail-overlay" id="newsDetailOverlay">
+    <div class="news-detail-content">
+      <button class="news-detail-close" id="closeNewsDetail">
+        <i>×</i>
+      </button>
+      <div class="news-detail-image" id="newsDetailImage">
+        <img src="" alt="新闻图片">
+      </div>
+      <div class="news-detail-body">
+        <h2 class="news-detail-title" id="newsDetailTitle"></h2>
+        <span class="news-detail-date" id="newsDetailDate"></span>
+        <div class="news-detail-text" id="newsDetailText"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 头部导航 -->
+  <header>
+    <nav class="container">
+      <a href="#home" class="logo">
+        <img src="图7.png" alt="塔斯汀logo">
+      </a>
+      <ul>
+        <li><a href="#home" class="active">首页</a></li>
+        <li><a href="#about">关于塔斯汀</a></li>
+        <li><a href="#food">塔塔美食</a></li>
+        <li><a href="#hot-sales">热销统计</a></li>
+        <li><a href="#news">动态资讯</a></li>
+        <li><a href="#store">门店查询</a></li>
+        <li><a href="#job">塔塔招聘</a></li>
+        <li><a href="#join">招商加盟</a></li>
+      </ul>
+      <p class="hotline">
+        <i>📞</i>
+        全国服务热线：400-926-7888
+      </p>
+      <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i>☰</i>
+      </button>
+    </nav>
+  </header>
+
+  <!-- 轮播图区域 -->
+  <div class="banner" id="home">
+    <!-- 轮播项1 - 替换为实际图片1 -->
+    <div class="slide active">
+      <img src="图1.png" alt="轮播图1">
+    </div>
+    
+    <!-- 轮播项2 - 替换为实际图片2 -->
+    <div class="slide">
+      <img src="图2.png" alt="轮播图2">
+    </div>
+    
+    <!-- 轮播项3 - 替换为实际图片3 -->
+    <div class="slide">
+      <img src="图3.png" alt="轮播图3">
+    </div>
+    
+    <!-- 轮播项4 - 替换为实际图片4 -->
+    <div class="slide">
+      <img src="图4.png" alt="轮播图4">
+    </div>
+    
+    <!-- 轮播项5 - 替换为实际图片5 -->
+    <div class="slide">
+      <img src="图5.png" alt="轮播图5">
+    </div>
+    
+    <!-- 轮播控制按钮 -->
+    <div class="banner-control prev" id="prevBtn">
+      <i>←</i>
+    </div>
+    <div class="banner-control next" id="nextBtn">
+      <i>→</i>
+    </div>
+    
+    <!-- 指示器 -->
+    <div class="banner-indicator" id="indicators">
+      <span class="active" data-index="0"></span>
+      <span data-index="1"></span>
+      <span data-index="2"></span>
+      <span data-index="3"></span>
+      <span data-index="4"></span>
+    </div>
+  </div>
+
+  <!-- 关于塔斯汀板块 -->
+  <section class="about" id="about">
+    <div class="container">
+      <h2 class="section-title">关于<span>塔斯汀</span></h2>
+      <div class="about-content">
+        <div class="about-img">
+          <img src="图6.png" alt="塔斯汀品牌介绍"> 
+        </div>
+        <div class="about-text">
+          <h3>塔斯汀品牌简介</h3>
+          <p>塔斯汀品牌隶属于福州塔斯汀餐饮管理有限公司，是主营中国汉堡的餐饮连锁品牌。截止2024年12月，塔斯汀全国签约加盟店数达8000+家，线上会员注册数1.9亿+，加盟店覆盖全国300+城市。</p>
+          <p>塔斯汀以"国潮餐饮"为品牌定位，以"弘扬中华美食"为品牌使命，致力于打造中国汉堡第一品牌。</p>
+          <div class="btn-group">
+            <a href="#" class="btn btn-primary">了解更多</a>
+            <a href="#join" class="btn btn-outline">加盟合作</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 塔塔美食板块 -->
+  <section class="foods" id="food">
+    <div class="container">
+      <h2 class="section-title">塔塔<span>美食</span></h2>
+      <div class="food-list">
+        <!-- 美食1 -->
+        <div class="food-item">
+          <div class="food-img">
+            <img src="图8.png" alt="香辣鸡腿中国汉堡"> 
+          </div>
+          <div class="food-info">
+            <h3>香辣鸡腿中国汉堡</h3>
+            <p>精选优质鸡腿肉，搭配新鲜蔬菜和特制酱料，230℃高温现烤堡胚，麦香四溢。</p>
+            <div class="food-price">¥12.00</div>
+          </div>
+        </div>
+        
+        <!-- 美食2 -->
+        <div class="food-item">
+          <div class="food-img">
+            <img src="图9.png" alt="藤椒嫩鸡中国汉堡"> 
+          </div>
+          <div class="food-info">
+            <h3>藤椒嫩鸡中国汉堡</h3>
+            <p>鲜嫩鸡肉配以藤椒风味，独特口感，现烤堡胚带来香脆体验。</p>
+            <div class="food-price">¥15.00</div>
+          </div>
+        </div>
+        
+        <!-- 美食3 -->
+        <div class="food-item">
+          <div class="food-img">
+            <img src="图10.png" alt="培根煎蛋中国汉堡"> 
+          </div>
+          <div class="food-info">
+            <h3>培根煎蛋中国汉堡</h3>
+            <p>精选培根搭配煎蛋，麻辣鲜香，现烤堡胚锁住美味。</p>
+            <div class="food-price">¥18.00</div>
+          </div>
+        </div>
+      </div>
+      <div class="text-center mt-4">
+        <a href="#" class="btn btn-primary">查看更多美食</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 热销产品统计板块 -->
+  <section class="hot-sales" id="hot-sales">
+    <div class="container">
+      <h2 class="section-title">热销<span>产品统计</span></h2>
+      <div class="hot-sales-container">
+        <!-- 左侧热销产品列表 -->
+        <div class="hot-sales-left">
+          <h3 class="section-subtitle">热销产品</h3>
+          <div id="hotProducts" class="hot-products">
+            <!-- 热销产品将通过JavaScript动态生成 -->
+          </div>
+        </div>
+        
+        <!-- 右侧图表区域 -->
+        <div class="hot-sales-right">
+          <!-- 时段热销量对比图 -->
+          <div class="hot-chart">
+            <h3>不同时段热销量对比</h3>
+            <div class="chart-container" id="timeSeriesChart"></div>
+          </div>
+          
+          <!-- 热销产品占比饼图 -->
+          <div class="hot-chart">
+            <h3>热销产品占比</h3>
+            <div class="chart-container" id="pieChart"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 动态资讯板块 -->
+  <section class="news" id="news">
+    <div class="container">
+      <h2 class="section-title">动态<span>资讯</span></h2>
+      <div class="news-list">
+        <!-- 新闻1 -->
+        <div class="news-item">
+          <div class="news-img">
+            <img src="图11.png" alt="塔斯汀品牌新闻"> 
+          </div>
+          <div class="news-info">
+            <span class="news-date">2024-11-25</span>
+            <h3>塔斯汀发布品牌声明，严厉打击侵权行为</h3>
+            <p>近日，塔斯汀餐饮管理有限公司发布品牌声明，将对市场上模仿"塔斯汀"品牌的行为采取法律行动，维护品牌权益。</p>
+            <a href="#" class="news-more">阅读全文</a>
+          </div>
+        </div>
+        
+        <!-- 新闻2 -->
+        <div class="news-item">
+          <div class="news-img">
+            <img src="图12.png" alt="塔斯汀新品发布"> 
+          </div>
+          <div class="news-info">
+            <span class="news-date">2024-10-15</span>
+            <h3>塔斯汀新品发布，创新口味引领中国汉堡新潮流</h3>
+            <p>塔斯汀推出全新系列中国汉堡，融合传统中式风味与现代快餐工艺，为消费者带来全新味觉体验。</p>
+            <a href="#" class="news-more">阅读全文</a>
+          </div>
+        </div>
+      </div>
+      <div class="text-center mt-4">
+        <a href="#" class="btn btn-primary">查看更多资讯</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 热点新闻轮播 -->
+  <section class="hot-news" id="hot-news">
+    <div class="container">
+      <h2 class="section-title">热点<span>新闻</span></h2>
+      <div class="news-banner">
+        <!-- 热点新闻轮播项1 -->
+        <div class="news-slide active" data-id="1">
+          <img src="图13.png" alt="塔斯汀品牌升级">
+          <div class="news-text">
+            <h3>塔斯汀品牌全面升级，引领国潮餐饮新潮流</h3>
+            <p>塔斯汀近日宣布品牌全面升级，以"中国汉堡"为核心，融合更多中华传统文化元素，打造更具辨识度的国潮餐饮品牌。</p>
+          </div>
+        </div>
+        
+        <!-- 热点新闻轮播项2 -->
+        <div class="news-slide" data-id="2">
+          <img src="图14.png" alt="塔斯汀新品发布">
+          <div class="news-text">
+            <h3>塔斯汀全新"龙行天下"系列产品震撼上市</h3>
+            <p>塔斯汀推出全新"龙行天下"系列中国汉堡，融合传统中式馅料与创新工艺，为消费者带来全新味觉体验。</p>
+          </div>
+        </div>
+        
+        <!-- 热点新闻轮播项3 -->
+        <div class="news-slide" data-id="3">
+          <img src="图15.png" alt="塔斯汀战略合作">
+          <div class="news-text">
+            <h3>塔斯汀与知名IP达成战略合作，共创餐饮新体验</h3>
+            <p>塔斯汀宣布与国内某知名动漫IP达成战略合作，将推出联名产品和主题门店，为消费者带来沉浸式餐饮体验。</p>
+          </div>
+        </div>
+        
+        <!-- 热点新闻轮播项4 -->
+        <div class="news-slide" data-id="4">
+          <img src="图16.png" alt="塔斯汀公益活动">
+          <div class="news-text">
+            <h3>塔斯汀启动"助力乡村振兴"公益计划</h3>
+            <p>塔斯汀正式启动"助力乡村振兴"公益计划，将通过产业帮扶、教育支持等多种方式，助力乡村经济发展和人才培养。</p>
+          </div>
+        </div>
+        
+        <!-- 热点新闻轮播项5 -->
+        <div class="news-slide" data-id="5">
+          <img src="图17.png" alt="塔斯汀门店扩张">
+          <div class="news-text">
+            <h3>塔斯汀全国门店突破8000家，加速布局下沉市场</h3>
+            <p>塔斯汀全国门店数量已突破8000家，覆盖全国300+城市，未来将继续加速下沉市场布局，让更多消费者品尝到中国汉堡的独特魅力。</p>
+          </div>
+        </div>
+        
+        <!-- 轮播控制按钮 -->
+        <div class="news-banner-control prev" id="newsPrevBtn">
+          <i>←</i>
+        </div>
+        <div class="news-banner-control next" id="newsNextBtn">
+          <i>→</i>
+        </div>
+        
+        <!-- 指示器 -->
+        <div class="news-banner-indicator" id="newsIndicators">
+          <span class="active" data-index="0"></span>
+          <span data-index="1"></span>
+          <span data-index="2"></span>
+          <span data-index="3"></span>
+          <span data-index="4"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 门店查询板块 -->
+  <section class="store" id="store">
+    <div class="container">
+      <h2 class="section-title">门店<span>查询</span></h2>
+      <div class="store-search">
+        <input type="text" placeholder="输入城市/地址" class="store-input">
+        <button class="btn btn-primary">查询</button>
+      </div>
+      <div class="store-map">
+        <img src="图6.png" alt="塔斯汀门店地图"> 
+      </div>
+      <p class="text-center mt-4">全国300+城市，8000+门店为您服务</p>
+    </div>
+  </section>
+
+  <!-- 塔塔招聘板块 -->
+  <section class="job" id="job">
+    <div class="container">
+      <h2 class="section-title">塔塔<span>招聘</span></h2>
+      <div class="job-list">
+        <!-- 职位1 -->
+        <div class="job-item">
+          <h3>门店储备干部</h3>
+          <p class="job-info">工作地点：全国各城市门店 | 薪资：5000-8000元/月</p>
+          <p class="job-desc">负责门店日常运营管理，协助店长完成各项经营指标，培养团队管理能力。</p>
+          <a href="#" class="btn btn-outline">申请职位</a>
+        </div>
+        
+        <!-- 职位2 -->
+        <div class="job-item">
+          <h3>市场专员</h3>
+          <p class="job-info">工作地点：总部及区域分公司 | 薪资：6000-10000元/月</p>
+          <p class="job-desc">负责品牌推广、市场活动策划与执行，分析市场数据，提升品牌影响力。</p>
+          <a href="#" class="btn btn-outline">申请职位</a>
+        </div>
+        
+        <!-- 职位3 -->
+        <div class="job-item">
+          <h3>加盟顾问</h3>
+          <p class="job-info">工作地点：总部及区域分公司 | 薪资：8000-15000元/月</p>
+          <p class="job-desc">负责解答加盟商咨询，评估加盟意向，协助完成加盟流程，维护加盟商关系。</p>
+          <a href="#" class="btn btn-outline">申请职位</a>
+        </div>
+      </div>
+      <div class="text-center mt-4">
+        <a href="#" class="btn btn-primary">查看更多职位</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 招商加盟板块 -->
+  <section class="join" id="join">
+    <div class="container">
+      <h2 class="section-title">招商<span>加盟</span></h2>
+      
+      <!-- 加盟优势 -->
+      <div class="advantages">
+        <h3 class="section-subtitle">加盟优势</h3>
+        <div class="advantage-list">
+          <div class="advantage-item">
+            <div class="advantage-icon">
+              <i>🔥</i>
+            </div>
+            <h3>品牌优势</h3>
+            <p>塔斯汀作为中国汉堡第一品牌，拥有较高的品牌知名度和美誉度，消费者认知度高。</p>
+          </div>
+          
+          <div class="advantage-item">
+            <div class="advantage-icon">
+              <i>🍔</i>
+            </div>
+            <h3>产品优势</h3>
+            <p>230℃高温现烤堡胚，独特的中国汉堡口味，产品差异化明显，竞争力强。</p>
+          </div>
+          
+          <div class="advantage-item">
+            <div class="advantage-icon">
+              <i>🎨</i>
+            </div>
+            <h3>装修优势</h3>
+            <p>国潮风格门店设计，独特的视觉形象，提升品牌辨识度，吸引消费者。</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 加盟流程 -->
+      <div class="join-process">
+        <h3 class="section-subtitle">加盟流程</h3>
+        <div class="process-list">
+          <div class="process-item">
+            <div class="process-number">1</div>
+            <div class="process-content">
+              <h3>加盟咨询</h3>
+              <p>通过电话、官网、微信等渠道咨询加盟详情，了解加盟条件和流程。</p>
+            </div>
+          </div>
+          
+          <div class="process-item">
+            <div class="process-number">2</div>
+            <div class="process-content">
+              <h3>申请加盟</h3>
+              <p>填写加盟申请表，提交个人资料和加盟意向，等待总部审核。</p>
+            </div>
+          </div>
+          
+          <div class="process-item">
+            <div class="process-number">3</div>
+            <div class="process-content">
+              <h3>实地考察</h3>
+              <p>到总部或就近门店实地考察，了解品牌文化、产品特点和运营模式。</p>
+            </div>
+          </div>
+          
+          <div class="process-item">
+            <div class="process-number">4</div>
+            <div class="process-content">
+              <h3>签订合同</h3>
+              <p>审核通过后，双方签订加盟合同，明确权利和义务，缴纳相关费用。</p>
+            </div>
+          </div>
+          
+          <div class="process-item">
+            <div class="process-number">5</div>
+            <div class="process-content">
+              <h3>店铺选址</h3>
+              <p>总部协助加盟商进行店铺选址，提供专业的选址评估和建议。</p>
+            </div>
+          </div>
+          
+          <div class="process-item">
+            <div class="process-number">6</div>
+            <div class="process-content">
+              <h3>装修设计</h3>
+              <p>总部提供统一的装修设计方案，加盟商按照方案进行店铺装修。</p>
+            </div>
+          </div>
+          
+          <div class="process-item">
+            <div class="process-number">7</div>
+            <div class="process-content">
+              <h3>人员培训</h3>
+              <p>加盟商及员工到总部参加系统的培训，学习产品制作、运营管理等知识。</p>
+            </div>
+          </div>
+          
+          <div class="process-item">
+            <div class="process-number">8</div>
+            <div class="process-content">
+              <h3>开业筹备</h3>
+              <p>总部协助制定开业计划，提供物料支持，做好开业前的各项准备工作。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 加盟申请表 -->
+      <div class="join-form">
+        <h3 class="section-subtitle">加盟申请</h3>
+        <form>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="name">姓名</label>
+              <input type="text" class="form-control" id="name" placeholder="请输入您的姓名">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="phone">电话</label>
+              <input type="tel" class="form-control" id="phone" placeholder="请输入您的联系电话">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="city">意向城市</label>
+              <input type="text" class="form-control" id="city" placeholder="请输入您的意向加盟城市">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="budget">投资预算</label>
+              <input type="text" class="form-control" id="budget" placeholder="请输入您的投资预算范围">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="message">留言</label>
+            <textarea class="form-control" id="message" rows="3" placeholder="请输入您的加盟需求或疑问"></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">提交申请</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- 联系我们板块 -->
+  <section class="contact" id="contact">
+    <div class="container">
+      <h2 class="section-title">联系<span>我们</span></h2>
+      <div class="contact-content">
+        <div class="contact-info">
+          <div class="contact-item">
+            <div class="contact-icon">
+              <i>📍</i>
+            </div>
+            <div class="contact-text">
+              <h3>总部地址</h3>
+              <p>福建省福州市台江区富力中心B1栋22层</p>
+            </div>
+          </div>
+          
+          <div class="contact-item">
+            <div class="contact-icon">
+              <i>📞</i>
+            </div>
+            <div class="contact-text">
+              <h3>全国服务热线</h3>
+              <p>400-926-7888</p>
+            </div>
+          </div>
+          
+          <div class="contact-item">
+            <div class="contact-icon">
+              <i>✉️</i>
+            </div>
+            <div class="contact-text">
+              <h3>电子邮箱</h3>
+              <p>tastiting@tastiting.com</p>
+            </div>
+          </div>
+          
+          <div class="contact-item">
+            <div class="contact-icon">
+              <i>🕙</i>
+            </div>
+            <div class="contact-text">
+              <h3>工作时间</h3>
+              <p>周一至周日 9:00-18:00</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="contact-form">
+          <h3>留言咨询</h3>
+          <form>
+            <div class="form-group">
+              <label for="contact-name">姓名</label>
+              <input type="text" class="form-control" id="contact-name" placeholder="请输入您的姓名">
+            </div>
+            <div class="form-group">
+              <label for="contact-email">邮箱</label>
+              <input type="email" class="form-control" id="contact-email" placeholder="请输入您的邮箱">
+            </div>
+            <div class="form-group">
+              <label for="contact-subject">主题</label>
+              <input type="text" class="form-control" id="contact-subject" placeholder="请输入留言主题">
+            </div>
+            <div class="form-group">
+              <label for="contact-message">留言内容</label>
+              <textarea class="form-control" id="contact-message" rows="5" placeholder="请输入您的留言内容"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">提交留言</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 页脚 -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-item">
+          <h3>关于我们</h3>
+          <p>塔斯汀品牌隶属于福州塔斯汀餐饮管理有限公司，是主营中国汉堡的餐饮连锁品牌。</p>
+          <div class="footer-social">
+            <a href="#" title="微信"><i>👁️</i></a>
+            <a href="#" title="微博"><i>🐦</i></a>
+            <a href="#" title="抖音"><i>🎵</i></a>
+            <a href="#" title="小红书"><i>📕</i></a>
+          </div>
+        </div>
+        
+        <div class="footer-item">
+          <h3>快速链接</h3>
+          <ul>
+            <li><a href="#home">首页</a></li></li>
+            <li><a href="#about">关于塔斯汀</a></li>
+            <li><a href="#food">塔塔美食</a></li>
+            <li><a href="#hot-sales">热销统计</a></li>
+            <li><a href="#news">动态资讯</a></li>
+            <li><a href="#store">门店查询</a></li>
+            <li><a href="#job">塔塔招聘</a></li>
+            <li><a href="#join">招商加盟</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-item">
+          <h3>联系方式</h3>
+          <ul>
+            <li>总部地址：福建省福州市台江区富力中心B1栋22层</li>
+            <li>全国服务热线：400-926-7888</li>
+            <li>电子邮箱：tastiting@tastiting.com</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+  <script>
+    // 弹出层关闭逻辑
+    const closeBtn = document.getElementById('closePopup');
+    const overlay = document.getElementById('overlay');
+    
+    closeBtn.addEventListener('click', () => {
+      overlay.style.display = 'none';
+    });
+
+    // 轮播图逻辑
+    const slides = document.querySelectorAll('.banner .slide');
+    const indicators = document.getElementById('indicators').querySelectorAll('span');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    let currentIndex = 0;
+    const slideCount = slides.length;
+    let autoPlayInterval;
+
+    // 显示指定索引的轮播图
+    function showSlide(index) {
+      // 隐藏所有轮播图
+      slides.forEach(slide => {
+        slide.classList.remove('active');
+      });
+      
+      // 重置所有指示器
+      indicators.forEach(indicator => {
+        indicator.classList.remove('active');
+      });
+      
+      // 显示当前轮播图和指示器
+      slides[index].classList.add('active');
+      indicators[index].classList.add('active');
+      
+      currentIndex = index;
+    }
+
+    // 下一张轮播图
+    function nextSlide() {
+      currentIndex = (currentIndex + 1) % slideCount;
+      showSlide(currentIndex);
+    }
+
+    // 上一张轮播图
+    function prevSlide() {
+      currentIndex = (currentIndex - 1 + slideCount) % slideCount;
+      showSlide(currentIndex);
+    }
+
+    // 自动播放
+    function startAutoPlay() {
+      autoPlayInterval = setInterval(nextSlide, 5000); // 5秒切换一次
+    }
+
+    // 停止自动播放
+    function stopAutoPlay() {
+      clearInterval(autoPlayInterval);
+    }
+
+    // 初始化轮播图
+    function initBanner() {
+      showSlide(0);
+      startAutoPlay();
+
+      // 下一张按钮点击事件
+      nextBtn.addEventListener('click', () => {
+        nextSlide();
+        stopAutoPlay();
+        startAutoPlay();
+      });
+
+      // 上一张按钮点击事件
+      prevBtn.addEventListener('click', () => {
+        prevSlide();
+        stopAutoPlay();
+        startAutoPlay();
+      });
+
+      // 指示器点击事件
+      indicators.forEach(indicator => {
+        indicator.addEventListener('click', () => {
+          const index = parseInt(indicator.dataset.index);
+          showSlide(index);
+          stopAutoPlay();
+          startAutoPlay();
+        });
+      });
+
+      // 鼠标悬停暂停自动播放
+      const banner = document.querySelector('.banner');
+      banner.addEventListener('mouseenter', stopAutoPlay);
+      banner.addEventListener('mouseleave', startAutoPlay);
+    }
+
+    // 热点新闻轮播逻辑
+    const newsSlides = document.querySelectorAll('.news-banner .news-slide');
+    const newsIndicators = document.getElementById('newsIndicators').querySelectorAll('span');
+    const newsPrevBtn = document.getElementById('newsPrevBtn');
+    const newsNextBtn = document.getElementById('newsNextBtn');
+    let currentNewsIndex = 0;
+    const newsSlideCount = newsSlides.length;
+    let newsAutoPlayInterval;
+
+    // 显示指定索引的新闻轮播图
+    function showNewsSlide(index) {
+      // 隐藏所有新闻轮播图
+      newsSlides.forEach(slide => {
+        slide.classList.remove('active');
+      });
+      
+      // 重置所有指示器
+      newsIndicators.forEach(indicator => {
+        indicator.classList.remove('active');
+      });
+      
+      // 显示当前新闻轮播图和指示器
+      newsSlides[index].classList.add('active');
+      newsIndicators[index].classList.add('active');
+      
+      currentNewsIndex = index;
+    }
+
+    // 下一张新闻轮播图
+    function nextNewsSlide() {
+      currentNewsIndex = (currentNewsIndex + 1) % newsSlideCount;
+      showNewsSlide(currentNewsIndex);
+    }
+
+    // 上一张新闻轮播图
+    function prevNewsSlide() {
+      currentNewsIndex = (currentNewsIndex - 1 + newsSlideCount) % newsSlideCount;
+      showNewsSlide(currentNewsIndex);
+    }
+
+    // 自动播放新闻轮播图
+    function startNewsAutoPlay() {
+      newsAutoPlayInterval = setInterval(nextNewsSlide, 5000); // 5秒切换一次
+    }
+
+    // 停止自动播放新闻轮播图
+    function stopNewsAutoPlay() {
+      clearInterval(newsAutoPlayInterval);
+    }
+
+    // 初始化新闻轮播图
+    function initNewsBanner() {
+      showNewsSlide(0);
+      startNewsAutoPlay();
+
+      // 下一张按钮点击事件
+      newsNextBtn.addEventListener('click', () => {
+        nextNewsSlide();
+        stopNewsAutoPlay();
+        startNewsAutoPlay();
+      });
+
+      // 上一张按钮点击事件
+      newsPrevBtn.addEventListener('click', () => {
+        prevNewsSlide();
+        stopNewsAutoPlay();
+        startNewsAutoPlay();
+      });
+
+      // 指示器点击事件
+      newsIndicators.forEach(indicator => {
+        indicator.addEventListener('click', () => {
+          const index = parseInt(indicator.dataset.index);
+          showNewsSlide(index);
+          stopNewsAutoPlay();
+          startNewsAutoPlay();
+        });
+      });
+
+      // 鼠标悬停暂停自动播放
+      const newsBanner = document.querySelector('.news-banner');
+      newsBanner.addEventListener('mouseenter', stopNewsAutoPlay);
+      newsBanner.addEventListener('mouseleave', startNewsAutoPlay);
+
+      // 新闻轮播图点击事件
+      newsSlides.forEach(slide => {
+        slide.addEventListener('click', () => {
+          const newsId = slide.dataset.id;
+          openNewsDetail(newsId);
+        });
+      });
+    }
+
+    // 热点新闻数据
+    const newsData = [
+      {
+        id: 1,
+        title: "塔斯汀品牌全面升级，引领国潮餐饮新潮流",
+        date: "2024-11-28",
+        image: "图13.png",
+        content: `塔斯汀近日宣布品牌全面升级，以"中国汉堡"为核心，融合更多中华传统文化元素，打造更具辨识度的国潮餐饮品牌。
+
+本次品牌升级包括以下几个方面：
+
+1. 品牌形象升级：全新的视觉识别系统，融入更多中国传统元素，如书法、剪纸、水墨等，打造独特的国潮风格。
+
+2. 产品体系升级：推出更多创新产品，丰富产品矩阵，满足不同消费者的口味需求。
+
+3. 门店体验升级：全新的门店设计，营造沉浸式的国潮餐饮体验，让消费者在享受美食的同时，感受中华传统文化的魅力。
+
+4. 数字化服务升级：加强数字化建设，提升线上线下服务体验，为消费者提供更加便捷、高效的服务。
+
+塔斯汀品牌创始人表示，品牌升级是为了更好地满足消费者的需求，同时也是为了弘扬中华美食文化，让更多人了解和喜爱中国汉堡。
+
+未来，塔斯汀将继续秉承"国潮餐饮"的品牌定位，不断创新和发展，为消费者带来更多优质的产品和服务，引领国潮餐饮新潮流。`
+      },
+      {
+        id: 2,
+        title: "塔斯汀全新\"龙行天下\"系列产品震撼上市",
+        date: "2024-11-20",
+        image: "图14.png",
+        content: `塔斯汀推出全新"龙行天下"系列中国汉堡，融合传统中式馅料与创新工艺，为消费者带来全新味觉体验。
+
+该系列产品包括以下几款特色汉堡：
+
+1. 龙皇牛肉堡：精选上等牛肉，搭配特制酱料和新鲜蔬菜，230℃高温现烤堡胚，口感鲜嫩多汁。
+
+2. 神龙鲜虾堡：选用优质鲜虾，外酥里嫩，配以特制酱料和新鲜蔬菜，口感丰富。
+
+3. 蛟龙鸡肉堡：鲜嫩鸡肉配以独特风味，现烤堡胚带来香脆体验，让你回味无穷。
+
+4. 霸王鸡腿堡：精选优质鸡腿肉，搭配新鲜蔬菜和特制酱料，230℃高温现烤堡胚，麦香四溢。
+
+此外，该系列还推出了特色饮品和小食，如"龙吟"奶茶、"龙鳞"薯条等，为消费者提供更加丰富的选择。
+
+塔斯汀产品研发负责人表示，"龙行天下"系列产品的推出，是塔斯汀对中国传统美食文化的一次全新诠释和创新。通过将传统中式馅料与现代快餐工艺相结合，打造出既符合国人口味，又具有现代快餐便捷性的全新产品。
+
+该系列产品已在全国各大塔斯汀门店同步上市，欢迎广大消费者前来品尝，感受中国汉堡的独特魅力。`
+      },
+      {
+        id: 3,
+        title: "塔斯汀与知名IP达成战略合作，共创餐饮新体验",
+        date: "2024-11-15",
+        image: "图15.png",
+        content: `塔斯汀宣布与国内某知名动漫IP达成战略合作，将推出联名产品和主题门店，为消费者带来沉浸式餐饮体验。
+
+根据合作协议，双方将在以下几个方面展开深度合作：
+
+1. 联名产品：推出以该动漫IP为主题的限量版中国汉堡和周边产品，将动漫元素与塔斯汀的产品特色相结合。
+
+2. 主题门店：打造以该动漫IP为主题的特色门店，从装修风格到店内布置，全方位融入动漫元素，为消费者营造沉浸式的用餐环境。
+
+3. 营销活动：共同策划和执行一系列线上线下营销活动，包括主题促销、互动体验、粉丝见面会等，提升品牌知名度和影响力。
+
+4. 品牌推广：通过双方的官方渠道和社交媒体平台，进行品牌推广和宣传，扩大合作影响力，吸引更多消费者关注。
+
+塔斯汀品牌负责人表示，此次与知名动漫IP的合作，是塔斯汀品牌年轻化战略的重要举措。通过与年轻人喜爱的文化IP相结合，能够更好地贴近年轻消费者的生活方式和消费习惯，为他们带来更加有趣、有料的餐饮体验。
+
+该动漫IP的负责人也表示，非常高兴能够与塔斯汀这样具有创新精神和文化底蕴的餐饮品牌合作。双方在品牌理念和目标受众上高度契合，相信通过此次合作，能够为粉丝们带来全新的惊喜和体验。
+
+据悉，双方的联名产品和主题门店将于近期陆续推出，具体信息请关注塔斯汀官方渠道发布的消息。`
+      },
+      {
+        id: 4,
+        title: "塔斯汀启动\"助力乡村振兴\"公益计划",
+        date: "2024-11-10",
+        image: "图16.png",
+        content: `塔斯汀正式启动"助力乡村振兴"公益计划，将通过产业帮扶、教育支持等多种方式，助力乡村经济发展和人才培养。
+
+该公益计划主要包括以下几个方面：
+
+1. 产业帮扶：通过建立农产品直采基地，与当地农民合作，采购优质农产品，帮助农民增收致富。同时，提供技术支持和培训，帮助农民提高种植和养殖技术水平。
+
+2. 就业支持：优先招聘乡村地区的劳动力，提供就业机会和培训，帮助他们掌握一技之长，实现稳定就业。
+
+3. 教育支持：设立教育基金，为乡村地区的学生提供奖学金和助学金，帮助他们完成学业。同时，捐赠图书和教学设备，改善乡村学校的教学条件。
+
+4. 基础设施建设：参与乡村基础设施建设，如修建道路、桥梁、水利设施等，改善乡村居民的生活条件。
+
+5. 文化传承：挖掘和保护乡村传统文化，支持乡村文化活动和非遗项目的发展，促进乡村文化的传承和创新。
+
+塔斯汀品牌创始人表示，作为一家有社会责任感的企业，塔斯汀始终关注乡村发展和民生问题。启动"助力乡村振兴"公益计划，是塔斯汀积极响应国家号召，履行企业社会责任的重要举措。
+
+未来，塔斯汀将持续投入资源，深入推进该公益计划的实施，为乡村振兴贡献更多的力量。同时，也希望能够带动更多的企业和社会力量参与到乡村振兴中来，共同创造更加美好的未来。
+
+据悉，塔斯汀"助力乡村振兴"公益计划首批项目将在福建、江西、河南等省份的乡村地区启动，后续将逐步扩展到更多地区。`
+      },
+      {
+        id: 5,
+        title: "塔斯汀全国门店突破8000家，加速布局下沉市场",
+        date: "2024-11-05",
+        image: "图17.png",
+        content: `塔斯汀全国门店数量已突破8000家，覆盖全国300+城市，未来将继续加速下沉市场布局，让更多消费者品尝到中国汉堡的独特魅力。
+
+近年来，塔斯汀以其独特的中国汉堡产品和鲜明的国潮品牌形象，受到了广大消费者的喜爱和追捧。在快速扩张的同时，塔斯汀始终坚持"品质至上"的经营理念，严格把控产品质量和服务水平，确保每一位消费者都能享受到优质的用餐体验。
+
+塔斯汀创始人表示，门店数量的突破是塔斯汀发展历程中的一个重要里程碑，也是全体塔斯汀人共同努力的结果。未来，塔斯汀将继续秉承"国潮餐饮"的品牌定位，不断创新和发展，为消费者带来更多优质的产品和服务。
+
+在加速门店扩张的同时，塔斯汀也在不断加强供应链建设和数字化管理。通过建立完善的供应链体系，确保原材料的质量和供应稳定性；通过数字化管理平台，提升运营效率和服务质量，为门店的快速扩张提供有力支持。
+
+此外，塔斯汀还积极响应国家乡村振兴战略，将门店布局向三四线城市和乡镇市场延伸，为当地消费者提供就业机会和优质的餐饮服务，同时也为当地经济发展做出贡献。
+
+随着全国门店数量的不断增加，塔斯汀将进一步提升品牌影响力和市场竞争力，成为中国餐饮行业的领军品牌。同时，塔斯汀也将继续肩负起社会责任，为推动中国餐饮行业的发展和弘扬中华美食文化贡献力量。
+
+据悉，塔斯汀计划在未来三年内，将全国门店数量扩展到15000家，进一步巩固其在中国汉堡市场的领先地位。`
+      }
+    ];
+
+    // 打开新闻详情
+    function openNewsDetail(newsId) {
+      // 查找对应ID的新闻数据
+      const news = newsData.find(item => item.id == newsId);
+      
+      if (news) {
+        // 填充新闻详情内容
+        document.getElementById('newsDetailImage').querySelector('img').src = news.image;
+        document.getElementById('newsDetailTitle').textContent = news.title;
+        document.getElementById('newsDetailDate').textContent = news.date;
+        document.getElementById('newsDetailText').textContent = news.content;
+        
+        // 显示新闻详情弹出层
+        document.getElementById('newsDetailOverlay').classList.add('active');
+      }
+    }
+
+    // 关闭新闻详情
+    document.getElementById('closeNewsDetail').addEventListener('click', () => {
+      document.getElementById('newsDetailOverlay').classList.remove('active');
+    });
+
+    // 点击新闻详情弹出层背景关闭
+    document.getElementById('newsDetailOverlay').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('newsDetailOverlay')) {
+        document.getElementById('newsDetailOverlay').classList.remove('active');
+      }
+    });
+
+    // 导航菜单点击事件
+    const navLinks = document.querySelectorAll('nav ul li a');
+    navLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        // 阻止默认跳转行为
+        e.preventDefault();
+        
+        // 移除所有链接的active类
+        navLinks.forEach(l => l.classList.remove('active'));
+        
+        // 为当前点击的链接添加active类
+        link.classList.add('active');
+        
+        // 获取目标区域的id
+        const targetId = link.getAttribute('href');
+        
+        // 关闭移动菜单（如果打开）
+        const mobileMenu = document.querySelector('nav ul');
+        if (mobileMenu.classList.contains('active')) {
+          mobileMenu.classList.remove('active');
+        }
+        
+        // 平滑滚动到目标区域
+        document.querySelector(targetId).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+
+    // 移动菜单切换
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.querySelector('nav ul');
+    
+    mobileMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('active');
+    });
+
+    // 页面加载完成后初始化轮播图和新闻轮播图
+    window.addEventListener('load', () => {
+      initBanner();
+      initNewsBanner();
+      renderHotProducts();
+      renderTimeSeriesChart();
+      renderPieChart();
+    });
+
+    // 页面滚动时更新导航菜单状态
+    window.addEventListener('scroll', () => {
+      const sections = document.querySelectorAll('section[id]');
+      const scrollPosition = window.scrollY;
+      
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - 100;
+        const sectionHeight = section.offsetHeight;
+        const sectionId = section.getAttribute('id');
+        
+        if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+          navLinks.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === `#${sectionId}`) {
+              link.classList.add('active');
+            }
+          });
+        }
+      });
+    });
+
+    // 热销产品数据
+    const hotProductsData = [
+      {
+        id: 1,
+        name: "香辣鸡腿中国汉堡",
+        description: "精选优质鸡腿肉，搭配新鲜蔬菜和特制酱料，230℃高温现烤堡胚，麦香四溢。",
+        price: 12.00,
+        timeSales: [
+          { time: "10:00", sales: 120 },
+          { time: "12:00", sales: 350 },
+          { time: "14:00", sales: 200 },
+          { time: "17:00", sales: 280 },
+          { time: "19:00", sales: 420 },
+          { time: "21:00", sales: 180 }
+        ]
+      },
+      {
+        id: 2,
+        name: "藤椒嫩鸡中国汉堡",
+        description: "鲜嫩鸡肉配以藤椒风味，独特口感，现烤堡胚带来香脆体验。",
+        price: 15.00,
+        timeSales: [
+          { time: "10:00", sales: 80 },
+          { time: "12:00", sales: 240 },
+          { time: "14:00", sales: 130 },
+          { time: "17:00", sales: 190 },
+          { time: "19:00", sales: 280 },
+          { time: "21:00", sales: 120 }
+        ]
+      },
+      {
+        id: 3,
+        name: "培根煎蛋中国汉堡",
+        description: "精选培根搭配煎蛋，麻辣鲜香，现烤堡胚锁住美味。",
+        price: 18.00,
+        timeSales: [
+          { time: "10:00", sales: 60 },
+          { time: "12:00", sales: 180 },
+          { time: "14:00", sales: 90 },
+          { time: "17:00", sales: 140 },
+          { time: "19:00", sales: 210 },
+          { time: "21:00", sales: 80 }
+        ]
+      }
+    ];
+
+    // 渲染热销产品列表
+    function renderHotProducts() {
+      const hotProductsContainer = document.getElementById('hotProducts');
+      hotProductsContainer.innerHTML = '';
+      
+      hotProductsData.forEach(product => {
+        const productElement = document.createElement('div');
+        productElement.className = 'hot-product';
+        productElement.innerHTML = `
+          <h3>${product.name}</h3>
+          <p>价格: <span>¥${product.price.toFixed(2)}</span></p>
+          <p>描述: ${product.description}</p>
+        `;
+        hotProductsContainer.appendChild(productElement);
+      });
+    }
+
+    // 渲染时段热销量对比图
+    function renderTimeSeriesChart() {
+      const timeSeriesChart = echarts.init(document.getElementById('timeSeriesChart'));
+      
+      // 提取所有时间点
+      const times = hotProductsData[0].timeSales.map(item => item.time);
+      
+      // 提取每个产品的销量数据
+      const series = hotProductsData.map(product => ({
+        name: product.name,
+        type: 'line',
+        data: product.timeSales.map(item => item.sales),
+        smooth: true,
+        lineStyle: {
+          width: 3
+        },
+        itemStyle: {
+          borderRadius: 4,
+          width: 10,
+          height: 10
+        }
+      }));
+      
+      const option = {
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow'
+          }
+        },
+        legend: {
+          data: hotProductsData.map(product => product.name),
+          bottom: 0
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '15%',
+          top: '5%',
+          containLabel: true
+        },
+        xAxis: {
+          type: 'category',
+          data: times,
+          axisLine: {
+            lineStyle: {
+              color: '#999'
+            }
+          },
+          axisLabel: {
+            color: '#666'
+          }
+        },
+        yAxis: {
+          type: 'value',
+          axisLine: {
+            show: false
+          },
+          axisLabel: {
+            color: '#666'
+          },
+          splitLine: {
+            lineStyle: {
+              color: '#eee'
+            }
+          }
+        },
+        series: series,
+        color: ['#f82828', '#FF7D00', '#3166B8']
+      };
+      
+      timeSeriesChart.setOption(option);
+      
+      // 响应窗口大小变化
+      window.addEventListener('resize', () => {
+        timeSeriesChart.resize();
+      });
+    }
+
+    // 渲染热销产品占比饼图
+    function renderPieChart() {
+      const pieChart = echarts.init(document.getElementById('pieChart'));
+      
+      // 计算每个产品的总销量
+      const totalSales = hotProductsData.map(product => {
+        const sales = product.timeSales.reduce((sum, item) => sum + item.sales, 0);
+        return {
+          name: product.name,
+          value: sales
+        };
+      });
+      
+      const option = {
+        tooltip: {
+          trigger: 'item',
+          formatter: '{b}: {c} ({d}%)'
+        },
+        legend: {
+          orient: 'vertical',
+          left: 10,
+          data: hotProductsData.map(product => product.name)
+        },
+        series: [
+          {
+            name: '销量占比',
+            type: 'pie',
+            radius: ['40%', '70%'],
+            avoidLabelOverlap: false,
+            itemStyle: {
+              borderRadius: 10,
+              borderColor: '#fff',
+              borderWidth: 2
+            },
+            label: {
+              show: false,
+              position: 'center'
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: 16,
+                fontWeight: 'bold'
+              }
+            },
+            labelLine: {
+              show: false
+            },
+            data: totalSales
+          }
+        ],
+        color: ['#f82828', '#FF7D00', '#3166B8']
+      };
+      
+      pieChart.setOption(option);
+      
+      // 响应窗口大小变化
+      window.addEventListener('resize', () => {
+        pieChart.resize();
+      });
+    }
+  </script>
+</body>
+
+</html>
